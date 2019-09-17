@@ -1,0 +1,32 @@
+{
+  "name": "warehouse-manager-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel ./ -d dist --ignore ./dist,./node_modules,./.babelrc,./.gitignore,./.npmrc",
+    "start": "set DEBUG=app,app:* && npm run build && nodemon dist/app.js",
+    "server": "node dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.6.0",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.19.0",
+    "chalk": "^2.4.2",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "joi": "^14.3.1",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/preset-env": "^7.6.0"
+  }
+}
