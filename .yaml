@@ -36,10 +36,36 @@ paths:
             schema:
               $ref: '#/components/schemas/ProductItem'
         description: Product to add
+    get:
+      tags:
+        - admin
+        - mall Attendant(User)
+      summary: gets all products record from the system
+      operationId: getAllProducts
+      description: |
+        This endpoint returns all products record to an authorized user.
+      responses:
+        '200':
+          description: Access is granted products record is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/SaleItem'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+
   /products/{id}:
     get:
       summary: gets product by id
-      operationId: getProductsbyId
+      operationId: getProductbyId
       description: |
         By passing in the appropriate id, you can search for
         available product in the system
@@ -352,16 +378,15 @@ components:
     SaleItem:
       type: object
       required:
-        - item_sold
-        - sold_by
+        - product_id
+        - seller_id
         - unit_price
         - quantity_sold
       properties:
-        id:
-          description: auto-generate
+        product_id:
           type: number
           example: 1
-        sold_by:
+        seller_id:
           type: number
           example: 1
         unit_price:

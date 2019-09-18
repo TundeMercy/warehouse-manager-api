@@ -1,23 +1,41 @@
 import { writeFile, readFile } from './utils';
+const debug = require('debug')('app:products');
+import chalk from 'chalk';
 
 let products = [];
 let currentCount;
 
 async function loadCount(){
-  await readFile(`${__dirname}/../../data/productsCount.json`, data => currentCount = data.currentCount);
-}
-
-async function writeCount(){
-await writeFile(`${__dirname}/../../data/productsCount.json`, {currentCount: currentCount});
-}
-
-async function loadProducts(){
-await readFile(`${__dirname}/../../data/products.json`, data => products = data);
-}
-
-async function writeProducts(){
-await writeFile(`${__dirname}/../../data/products.json`, products);
-}
+    try {
+      await readFile(`${__dirname}/../data/productsCount.json`, data => currentCount = data.currentCount);
+    } catch (error) {
+      debug(chalk.red.bold("Error reading count file"));
+    }
+  }
+  
+  async function writeCount(){
+    try {
+      await writeFile(`${__dirname}/../data/productsCount.json`, {currentCount: currentCount});
+    } catch (error) {
+      debug(chalk.red.bold("Error Writing count file"));
+    }
+  }
+  
+  async function loadProducts(){
+    try {
+      await readFile(`${__dirname}/../data/products.json`, data => products = data);
+    } catch (error) {
+      debug(chalk.red.bold("Error reading products file"));
+    }
+  }
+  
+  async function writeProducts(){
+    try {
+      await writeFile(`${__dirname}/../data/products.json`, products);
+    } catch (error) {
+      debug(chalk.red.bold("Error writing products file"));
+    }
+  }
 
 class Products{
     constructor(){
@@ -43,7 +61,7 @@ class Products{
     async getProduct(productID){
         await loadProducts();
         const product = products.find((item) => item.id == productID);
-        if(!product) throw new Error("Product not found");
+        if(!product) return undefined;
         return product;
     }
 
@@ -62,7 +80,7 @@ class Products{
 
     async getLastID(){
         await loadCount();
-        return currentCount;
+        return currentCount || products.length;
     }
 }
 

@@ -2,14 +2,13 @@ const joi = require('joi');
 const debug = require('debug')('app:usersRoutes');
 import express from "express";
 
-import users from "../users";
+import users from "../entity-managers/users";
 import authRoute from "./authRoute";
 
 const usersRoutes = express.Router();
 
 const validateUser = user => {
   const schema = joi.object().keys({
-    id: joi.number().required(),
     email: joi.string(),
     role: joi.string().required(),
     first_name: joi.string(),
@@ -47,11 +46,11 @@ usersRoutes.get("/:userID", authRoute(["admin", "attendant"]), (req, res) => {
 usersRoutes.post("/", authRoute(["admin"]), (req, res) => {
   (async () => {
     const { body: userToAdd } = req;
-    userToAdd.id = await users.getLastID() + 1;
     const { error } = validateUser(userToAdd);
     if (error) {
       return res.status(400).json(error.details[0].message);
     }
+    userToAdd.id = await users.getLastID() + 1;
     await users.addUser(userToAdd);
     return res.status(200).json(await users.getUser(userToAdd.id));
   })();

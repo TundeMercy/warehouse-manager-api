@@ -1,6 +1,6 @@
 const joi = require("joi");
 import express from "express";
-import sales from "../sales";
+import sales from "../entity-managers/sales";
 import authRoute from "./authRoute";
 import products from "../entity-managers/products";
 import users from "../entity-managers/users";

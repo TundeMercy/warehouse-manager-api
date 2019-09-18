@@ -1,24 +1,43 @@
 import { writeFile, readFile } from './utils';
 import products from './products';
 import users from './users';
+import chalk from 'chalk';
+
+const debug = require('debug')('app:sales')
 
 let sales = [];
 let currentCount;
 
 async function loadCount(){
-  await readFile(`${__dirname}/../../data/salesCount.json`, data => currentCount = data.currentCount);
+  try {
+    await readFile(`${__dirname}/../data/salesCount.json`, data => currentCount = data.currentCount);
+  } catch (error) {
+    debug(chalk.red.bold("Error reading count file"));
+  }
 }
 
 async function writeCount(){
-await writeFile(`${__dirname}/../../data/salesCount.json`, {currentCount: currentCount});
+  try {
+    await writeFile(`${__dirname}/../data/salesCount.json`, {currentCount: currentCount});
+  } catch (error) {
+    debug(chalk.red.bold("Error Writing count file"));
+  }
 }
 
 async function loadSales(){
-await readFile(`${__dirname}/../../data/sales.json`, data => sales = data);
+  try {
+    await readFile(`${__dirname}/../data/sales.json`, data => sales = data);
+  } catch (error) {
+    debug(chalk.red.bold("Error reading sale file"));
+  }
 }
 
 async function writeSales(){
-await writeFile(`${__dirname}/../../data/sales.json`, sales);
+  try {
+    await writeFile(`${__dirname}/../data/sales.json`, sales);
+  } catch (error) {
+    debug(chalk.red.bold("Error writing sales file"));
+  }
 }
 
 
@@ -56,14 +75,14 @@ class Sales {
 
   async getSale(saleID) {
     await loadSales();
-    const sale = sales.find(({ obj: sale } = item) => sale.id === saleID);
-    if(!sale) throw new Error("Sale not found");
+    const sale = sales.find(item => item.id == saleID);
+    if(!sale) return undefined;
     return sale;
   }
 
   async getLastID() {
     await loadCount();
-    return currentCount;
+    return currentCount || sales.length;
   }
 }
 

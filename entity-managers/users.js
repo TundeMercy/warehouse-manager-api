@@ -1,24 +1,41 @@
 import { writeFile, readFile } from './utils';
+const debug = require('debug')('app:users');
+import chalk from 'chalk';
 
 let users = [];
 let currentCount;
 
 async function loadCount(){
-    await readFile(`${__dirname}/../../data/usersCount.json`, data => currentCount = data.currentCount);
+  try {
+    await readFile(`${__dirname}/../data/usersCount.json`, data => currentCount = data.currentCount);
+  } catch (error) {
+    debug(chalk.red.bold("Error reading count file"));
+  }
 }
 
 async function writeCount(){
-  await writeFile(`${__dirname}/../../data/usersCount.json`, {currentCount: currentCount});
+  try {
+    await writeFile(`${__dirname}/../data/usersCount.json`, {currentCount: currentCount});
+  } catch (error) {
+    debug(chalk.red.bold("Error Writing count file"));
+  }
 }
 
 async function loadUsers(){
-  await readFile(`${__dirname}/../../data/users.json`, data => users = data);
+  try {
+    await readFile(`${__dirname}/../data/users.json`, data => users = data);
+  } catch (error) {
+    debug(chalk.red.bold("Error reading users file"));
+  }
 }
 
 async function writeUsers(){
-await writeFile(`${__dirname}/../../data/users.json`, users);
+  try {
+    await writeFile(`${__dirname}/../data/users.json`, users);
+  } catch (error) {
+    debug(chalk.red.bold("Error writing users file"));
+  }
 }
-
 
 class Users {
   constructor() {
@@ -44,8 +61,8 @@ class Users {
 
   async getUser(userID) {
     await loadUsers();
-    const user = users.find(({ obj: user } = item) => user.id === userID);
-    if(!user) throw new Error('User not Found');
+    const user = users.find(item => item.id == userID);
+    if(!user) return undefined;
     return user;
   }
 
@@ -64,7 +81,7 @@ class Users {
 
   async getLastID() {
     await loadCount();
-    return currentCount;
+    return currentCount || users.length;
   }
 }
 
