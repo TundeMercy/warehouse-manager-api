@@ -1,0 +1,397 @@
+openapi: 3.0.0
+# Added by Tunde Ajagbe
+servers:
+  - description: Warehouse Inventory Management System
+    url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
+info:
+  description: This is warehouse-manager API
+  version: "1.0.0"
+  title: Warehouse Manager API
+  contact:
+    email: tundeajagbea@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admin
+    description: Secured Admin-only calls
+  - name: mall Attendant(User)
+    description: Secured Attendant-only calls
+paths:
+  /products:
+    post:
+      tags:
+        - admin
+      summary: adds a product
+      operationId: addInventory
+      description: Adds a new product to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductItem'
+        description: Product to add
+  /products/{id}:
+    get:
+      summary: gets product by id
+      operationId: getProductsbyId
+      description: |
+        By passing in the appropriate id, you can search for
+        available product in the system
+      parameters:
+        - in: path
+          name: id
+          description:  ID of the product to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: search result match criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ProductItem'
+        '404':
+          description: No product match the id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/404error'
+      tags:
+        - admin
+        - mall Attendant(User)
+    put:
+      tags:
+        - admin
+      summary: edits product by id
+      operationId: editProductsbyId
+      description: |
+        By passing in the appropriate id, you can edit a product in the system
+      parameters:
+        - in: path
+          name: id
+          description:  ID of the product to edit
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: succesfully edited the product. Returns the edited product
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ProductItem'
+        '404':
+          description: No product match the id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/404error'
+  /sales:
+    get:
+      tags:
+        - admin
+        - mall Attendant(User)
+      summary: gets all sales record from the system
+      operationId: getAllSales
+      description: |
+        This endpoint returns all sales record to an authorized user.
+      responses:
+        '200':
+          description: Access is granted all sale record is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/SaleItem'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+    post:
+      tags:
+        - mall Attendant(User)
+      summary: adds a new sales record
+      operationId: addSale
+      description: |
+        Adds a new sale record to the system. Modifies the product sold in product collection by deducting from its quantity property. Also modifies user collection by adding to the user sales property.  Returns the newly added sale
+      responses:
+        '201':
+          description: Sale created
+        '501':
+          description: 'Access denied'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleItem'
+        description: Sales item to add
+    
+  /sales/{id}:
+    get:
+      summary: gets sale by id
+      operationId: getSalebyId
+      description: |
+        By passing in the appropriate id, you can search for
+        available product in the system
+      parameters:
+        - in: path
+          name: id
+          description:  ID of the sale to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: search result match criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/SaleItem'
+        '404':
+          description: No sale match the id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/404error'
+        '501':
+          description: 'Access denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+      tags:
+        - admin
+        - mall Attendant(User)
+  /users:
+    get:
+      tags:
+        - admin
+      summary: gets all mall attendant(users) record from the system
+      operationId: getAllUsers
+      description: |
+        This endpoint returns all users record to an authorized user.
+      responses:
+        '200':
+          description: Access is granted and all sale record is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/UserItem'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+    post:
+      tags:
+        - admin
+      summary: adds a new mall attendant(user)
+      operationId: addUser
+      description: Adds a new mall attendant to the system
+      responses:
+        '201':
+          description: user created and the new user is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/UserItem'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserItem'
+        description: Mall attendant(User) to add
+  /users/{id}:
+    get:
+      summary: gets user by id
+      operationId: getUserbyId
+      description: |
+        By passing in the appropriate id, you can search for
+        a particular user in the system
+      parameters:
+        - in: path
+          name: id
+          description:  ID of the mall attendant to fetch
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: search result match criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/UserItem'
+        '404':
+          description: No mall attendant match the id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/404error'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/501error'
+      tags:
+        - admin
+    
+    
+components:
+  schemas:
+    ProductItem:
+      type: object
+      required:
+        - name
+        - category
+        - price
+        - quantity
+      properties:
+        id:
+          type: number
+          example: 5
+        name:
+          type: string
+          example: tomatoes
+        category:
+          type: string
+          example: vegetables
+        price:
+          type: string
+          example: $10.99
+        quantity:
+          type: number
+          example: 10
+        description:
+          type: string
+          example: A very nice crop top
+        image_url:
+          type: string
+          format: url
+          example: 'https://dummyimage.com/img1'
+    UserItem:
+      type: object
+      required:
+        - first_name
+        - email
+        - role
+        - sale
+      properties:
+        id:
+          type: number
+          example: 1
+        firstname:
+          type: string
+          example: Tunde
+        email:
+          type: string
+          example: 'tunde@gmail.com'
+        mobile_number:
+          type: number
+          example: 8106772233
+        sale:
+          type: number
+          example: 24
+        role:
+          type: string
+          example: attendant
+        image_url:
+          type: string
+          format: url
+          example: 'http://dummyimage.com/img43455'
+    SaleItem:
+      type: object
+      required:
+        - item_sold
+        - sold_by
+        - unit_price
+        - quantity_sold
+      properties:
+        id:
+          description: auto-generate
+          type: number
+          example: 1
+        sold_by:
+          type: number
+          example: 1
+        unit_price:
+          type: string
+          example: $50.50
+        quantity_sold:
+          type: number
+          example: 15
+    404error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: number
+              example: 404
+            message:
+              type: string
+              example: 'User not found'
+    501error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: number
+              example: 501
+            message:
+              type: string
+              example: 'You are not authorized to view this page'
+        

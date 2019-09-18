@@ -2,7 +2,7 @@ import { writeFile, readFile } from './utils';
 import products from './products';
 import users from './users';
 
-let sales;
+let sales = [];
 let currentCount;
 
 async function loadCount(){
@@ -36,17 +36,18 @@ class Sales {
   }
 
   async addSale(sale) {
-    sales[sale.id] = sale;
+    await loadSales();
+    sales.push(sale);
     await writeSales();
 
     currentCount++;
     await writeCount();
 
-    const seller = await users.getUser(sale.sold_by);
+    const seller = await users.getUser(sale.seller_id);
     seller.sale += sale.quantity_sold;
     await users.updateUser(seller.id, seller);
 
-    const product = await products.getProduct(sale.item_sold);
+    const product = await products.getProduct(sale.product_id);
     product.quantity -= sale.quantity_sold;
     await products.updateProduct(product.id, product);
 
@@ -55,7 +56,9 @@ class Sales {
 
   async getSale(saleID) {
     await loadSales();
-    return sales[saleID];
+    const sale = sales.find(({ obj: sale } = item) => sale.id === saleID);
+    if(!sale) throw new Error("Sale not found");
+    return sale;
   }
 
   async getLastID() {

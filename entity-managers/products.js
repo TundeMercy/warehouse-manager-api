@@ -1,6 +1,6 @@
 import { writeFile, readFile } from './utils';
 
-let products;
+let products = [];
 let currentCount;
 
 async function loadCount(){
@@ -33,7 +33,7 @@ class Products{
     }
 
     async addProduct(product){
-        products[product.id] = product;
+        products.push(product);
         await writeProducts();
         currentCount++;
         await writeCount();
@@ -42,14 +42,22 @@ class Products{
 
     async getProduct(productID){
         await loadProducts();
-        return products[productID];
+        const product = products.find((item) => item.id == productID);
+        if(!product) throw new Error("Product not found");
+        return product;
     }
 
     async updateProduct(productID, newProduct){
         await loadProducts();
-        products[productID] = newProduct;
-        await writeProducts();
-        return await this.getProduct(productID);
+        try {
+            const product = await this.getProduct(productID);
+            const index = products.indexOf(product);
+            products[index] = newProduct;
+            await writeProducts();
+            return await this.getProduct(productID);
+        } catch (error) {
+            throw error
+        }
     }
 
     async getLastID(){

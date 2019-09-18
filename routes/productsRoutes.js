@@ -9,7 +9,6 @@ const productRoutes = express.Router();
 
 const validateProduct = (product) => {
     const schema = joi.object().keys({
-        "id" : joi.number().required(),
         "name" : joi.string().required(),
         "category" : joi.string().required(),
         "price" : joi.string().required(),
@@ -34,8 +33,11 @@ productRoutes.get('/', authRoute(['admin','attendant']), (req, res) => {
 productRoutes.get('/:productID', authRoute(['admin','attendant']), (req, res,) => {
     (async () => {
         const { productID  } = req.params;
-        const product = await products.getProduct(productID);
-        if(!product) {
+        let product;
+        try{
+            product = await products.getProduct(productID);
+            return res.status(200).json(product);
+        }catch(err){
             return res.status(404).json({
                 error: {
                     code: 404,
@@ -43,7 +45,6 @@ productRoutes.get('/:productID', authRoute(['admin','attendant']), (req, res,) =
                 }
             });
         }
-        return res.status(200).json(product);
     })();
 });
 

@@ -1,6 +1,6 @@
 import { writeFile, readFile } from './utils';
 
-let users;
+let users = [];
 let currentCount;
 
 async function loadCount(){
@@ -34,7 +34,8 @@ class Users {
   }
 
   async addUser(user) {
-    users[user.id] = user;
+    await loadUsers();
+    users.push(user);
     await writeUsers();
     currentCount++;
     await writeCount();
@@ -43,14 +44,22 @@ class Users {
 
   async getUser(userID) {
     await loadUsers();
-    return users[userID];
+    const user = users.find(({ obj: user } = item) => user.id === userID);
+    if(!user) throw new Error('User not Found');
+    return user;
   }
 
   async updateUser(userID, newUser){
     await loadUsers();
-    users[userID] = newUser;
+    try {
+    const user = await this.getUser(userID);
+    const index = users.indexOf(user);
+    users[index] = newUser;
     await writeUsers();
-    return this.getUser(userID);
+    return await this.getUser(userID);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getLastID() {
