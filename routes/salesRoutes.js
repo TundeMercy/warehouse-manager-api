@@ -51,16 +51,16 @@ salesRoutes.post("/", authRoute(["attendant"]), (req, res) => {
       await users.getUser(saleToAdd.seller_id);
 
       if(product.quantity < saleToAdd.quantity_sold){
-        return res.status(501).json({error:{
-          code: 501,
+        return res.status(400).json({error:{
+          code: 400,
           message: "quantity_sold cannot be greater than what's is store"
         }});
       }
       await sales.addSale(saleToAdd);
       return res.status(200).json(await sales.getSale(saleToAdd.id));
     } catch (error) {
-      return res.status(501).json({error: {
-        code: 501,
+      return res.status(400).json({error: {
+        code: 400,
         message: "Invalid product_id or seller_id"
       }});
     }

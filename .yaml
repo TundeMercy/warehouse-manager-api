@@ -3,6 +3,8 @@ openapi: 3.0.0
 servers:
   - description: Warehouse Inventory Management System
     url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
+  - description: Local Machine
+    url: localhost:5002
 info:
   description: This is warehouse-manager API
   version: "1.0.0"
@@ -27,7 +29,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     post:
       tags:
         - admin
@@ -42,13 +44,17 @@ paths:
                 $ref: '#/components/schemas/ProductModelR'
           description: OK. Product returned
         '400':
-          description: 'invalid input, object invalid'
-        '501':
+          description: Bad request. Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400error'
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
       requestBody:
         content:
           application/json:
@@ -74,12 +80,12 @@ paths:
               schema:
                   items:
                     $ref: '#/components/schemas/ProductModelR'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
 
   /products/{id}:
     parameters:
@@ -89,7 +95,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     get:
       summary: Gets product by id
       operationId: getProductbyId
@@ -117,6 +123,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/404error'
+        '401':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401error'
       tags:
         - admin
         - mall Attendant(User)
@@ -156,6 +168,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/404error'
+        '401':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401error'
+        '400':
+          description: Bad request. Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400error'
   /sales:
     parameters:
         - in: header
@@ -164,7 +188,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     get:
       tags:
         - admin
@@ -181,12 +205,12 @@ paths:
               schema:
                 items:
                  $ref: '#/components/schemas/SaleModelR'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
     post:
       tags:
         - mall Attendant(User)
@@ -201,12 +225,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SaleModelR'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
+        '400':
+          description: Bad request. Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400error'
       requestBody:
         content:
           application/json:
@@ -225,7 +255,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     get:
       summary: gets sale by id
       operationId: getSalebyId
@@ -252,12 +282,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/404error'
-        '501':
+        '401':
           description: 'Access denied'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
       tags:
         - admin
         - mall Attendant(User)
@@ -269,7 +299,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     get:
       tags:
         - admin
@@ -286,12 +316,12 @@ paths:
               schema:
                 items:
                  $ref: '#/components/schemas/UserModelR'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
     post:
       tags:
         - admin
@@ -305,14 +335,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserModelR'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
         '400':
-          description: 'invalid input, object invalid'
+          description: Bad request. Invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400error'
       requestBody:
         content:
           application/json:
@@ -330,7 +364,7 @@ paths:
           required: true
           schema:
            type: string
-           enum: [admin,attendant]
+           enum: [admin,attendant,otherUsers]
     get:
       summary: gets user by id
       operationId: getUserbyId
@@ -357,12 +391,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/404error'
-        '501':
+        '401':
           description: Access denied.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/401error'
       tags:
         - admin
         - mall Attendant(User)
@@ -539,7 +573,7 @@ components:
             message:
               type: string
               example: 'User not found'
-    501error:
+    401error:
       type: object
       properties:
         error:
@@ -547,8 +581,11 @@ components:
           properties:
             code:
               type: number
-              example: 501
+              example: 401
             message:
               type: string
               example: 'You are not authorized to make this request'
+    400error:
+      type: string
+      example: "Some unknown property is not allowed"
         
