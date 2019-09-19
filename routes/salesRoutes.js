@@ -18,26 +18,23 @@ const validateSale = user => {
   return joi.validate(user, schema);
 };
 
-salesRoutes.get("/", authRoute(["admin"]), (req, res) => {
+salesRoutes.get("/", authRoute(["admin", 'attendant']), (req, res) => {
   (async () => {
     res.status(200).json(await sales.getAll());
   })();
 });
 
-salesRoutes.get("/:saleID", authRoute(["admin"]), (req, res) => {
+salesRoutes.get("/:saleID", authRoute(["admin", 'attendant']), (req, res) => {
 (async () => {
   const { saleID } = req.params;
-  try {
     const sale = await sales.getSale(saleID);
-    return res.status(200).json(sale);
-  } catch (error) { 
-  return res.status(404).json({
-    error: {
-      code: 404,
-      message: "Sale not found"
-    }
-  });  
-  }
+    if(sale) return res.status(200).json(sale);
+    return res.status(404).json({
+      error: {
+        code: 404,
+        message: "Sale not found"
+      }
+    });  
 })();
 });
 

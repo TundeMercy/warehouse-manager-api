@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "product_id": 4,
+    "seller_id": 8,
+    "unit_price": "$203.21",
+    "quantity_sold": 2
+  },
+  {
+    "id": 2,
+    "product_id": 1,
+    "seller_id": 3,
+    "unit_price": "$874.70",
+    "quantity_sold": 3
+  },
+  {
+    "id": 3,
+    "product_id": 2,
+    "seller_id": 5,
+    "unit_price": "$368.51",
+    "quantity_sold": 6
+  },
+  {
+    "id": 4,
+    "product_id": 2,
+    "seller_id": 6,
+    "unit_price": "$385.93",
+    "quantity_sold": 5
+  },
+  {
+    "id": 5,
+    "product_id": 4,
+    "seller_id": 5,
+    "unit_price": "$315.09",
+    "quantity_sold": 4
+  },
+  {
+    "id": 6,
+    "product_id": 4,
+    "seller_id": 4,
+    "unit_price": "$697.06",
+    "quantity_sold": 5
+  },
+  {
+    "id": 7,
+    "product_id": 3,
+    "seller_id": 3,
+    "unit_price": "$622.12",
+    "quantity_sold": 2
+  },
+  {
+    "id": 8,
+    "product_id": 2,
+    "seller_id": 5,
+    "unit_price": "$963.76",
+    "quantity_sold": 4
+  },
+  {
+    "id": 9,
+    "product_id": 3,
+    "seller_id": 5,
+    "unit_price": "$783.26",
+    "quantity_sold": 1
+  },
+  {
+    "id": 10,
+    "product_id": 1,
+    "seller_id": 4,
+    "unit_price": "$332.09",
+    "quantity_sold": 2
+  }
+]

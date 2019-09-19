@@ -57,7 +57,7 @@ productRoutes.post('/', authRoute(['admin']), (req, res) => {
     })();
 });
 
-productRoutes.put('/:productID', (req, res) => {
+productRoutes.put('/:productID',authRoute(['admin']), (req, res) => {
     (async () => {
         const { productID } = req.params;
         const { body: propsToUpdate } = req;

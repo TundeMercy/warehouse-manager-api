@@ -10,31 +10,53 @@ info:
   contact:
     email: tundeajagbea@gmail.com
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    name: Tunde 2.0
+    url: 'https://github.com/TundeMercy/warehouse-manager-api'
 tags:
   - name: admin
     description: Secured Admin-only calls
   - name: mall Attendant(User)
     description: Secured Attendant-only calls
+
 paths:
   /products:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     post:
       tags:
         - admin
-      summary: adds a product
+      summary: Adds a product
       operationId: addInventory
       description: Adds a new product to the system
       responses:
         '201':
-          description: item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductModelR'
+          description: OK. Product returned
         '400':
           description: 'invalid input, object invalid'
+        '501':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/501error'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductItem'
+              $ref: '#/components/schemas/ProductModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductModel'
         description: Product to add
     get:
       tags:
@@ -50,21 +72,26 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/SaleItem'
+                  items:
+                    $ref: '#/components/schemas/ProductModelR'
         '501':
           description: Access denied.
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
 
   /products/{id}:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     get:
-      summary: gets product by id
+      summary: Gets product by id
       operationId: getProductbyId
       description: |
         By passing in the appropriate id, you can search for
@@ -72,62 +99,72 @@ paths:
       parameters:
         - in: path
           name: id
-          description:  ID of the product to fetch
+          description:  Numeric ID of the product to fetch
           required: true
           schema:
             type: number
+            example: 1
       responses:
         '200':
           description: search result match criteria
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/ProductItem'
+                $ref: '#/components/schemas/ProductModelR'
         '404':
           description: No product match the id
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/404error'
+                $ref: '#/components/schemas/404error'
       tags:
         - admin
         - mall Attendant(User)
     put:
       tags:
         - admin
-      summary: edits product by id
+      summary: Update product by id
       operationId: editProductsbyId
       description: |
         By passing in the appropriate id, you can edit a product in the system
       parameters:
         - in: path
           name: id
-          description:  ID of the product to edit
+          description:  ID of the product to update
           required: true
           schema:
             type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductModelU'
+        description: Properties to Update
       responses:
         '200':
           description: succesfully edited the product. Returns the edited product
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/ProductItem'
+                $ref: '#/components/schemas/ProductModelR'
         '404':
           description: No product match the id
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/404error'
+                $ref: '#/components/schemas/404error'
   /sales:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     get:
       tags:
         - admin
@@ -142,17 +179,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 items:
-                  $ref: '#/components/schemas/SaleItem'
+                 $ref: '#/components/schemas/SaleModelR'
         '501':
           description: Access denied.
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
     post:
       tags:
         - mall Attendant(User)
@@ -161,18 +195,37 @@ paths:
       description: |
         Adds a new sale record to the system. Modifies the product sold in product collection by deducting from its quantity property. Also modifies user collection by adding to the user sales property.  Returns the newly added sale
       responses:
-        '201':
-          description: Sale created
+        '200':
+          description: OK. Sale created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleModelR'
         '501':
-          description: 'Access denied'
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/501error'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaleItem'
-        description: Sales item to add
+              $ref: '#/components/schemas/SaleModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SaleModel'
+        description: Sales Model to add
     
   /sales/{id}:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     get:
       summary: gets sale by id
       operationId: getSalebyId
@@ -192,32 +245,35 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/SaleItem'
+                $ref: '#/components/schemas/SaleModelR'
         '404':
           description: No sale match the id
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/404error'
+                $ref: '#/components/schemas/404error'
         '501':
           description: 'Access denied'
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
       tags:
         - admin
         - mall Attendant(User)
   /users:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     get:
       tags:
         - admin
+        - mall Attendant(User)
       summary: gets all mall attendant(users) record from the system
       operationId: getAllUsers
       description: |
@@ -228,17 +284,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 items:
-                  $ref: '#/components/schemas/UserItem'
+                 $ref: '#/components/schemas/UserModelR'
         '501':
           description: Access denied.
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
     post:
       tags:
         - admin
@@ -251,26 +304,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/UserItem'
+                $ref: '#/components/schemas/UserModelR'
         '501':
           description: Access denied.
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
         '400':
           description: 'invalid input, object invalid'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserItem'
+              $ref: '#/components/schemas/UserModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserModel'
         description: Mall attendant(User) to add
   /users/{id}:
+    parameters:
+        - in: header
+          name: role
+          description: User's role
+          required: true
+          schema:
+           type: string
+           enum: [admin,attendant]
     get:
       summary: gets user by id
       operationId: getUserbyId
@@ -290,38 +350,28 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/UserItem'
+                $ref: '#/components/schemas/UserModelR'
         '404':
           description: No mall attendant match the id
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/404error'
+                $ref: '#/components/schemas/404error'
         '501':
           description: Access denied.
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/501error'
+                $ref: '#/components/schemas/501error'
       tags:
         - admin
+        - mall Attendant(User)
     
     
 components:
   schemas:
-    ProductItem:
+    ProductModelR:
       type: object
-      required:
-        - name
-        - category
-        - price
-        - quantity
       properties:
         id:
           type: number
@@ -345,13 +395,84 @@ components:
           type: string
           format: url
           example: 'https://dummyimage.com/img1'
-    UserItem:
+    ProductModel:
+      type: object
+      required:
+        - name
+        - category
+        - price
+        - quantity
+      properties:
+        name:
+          type: string
+          example: tomatoes
+        category:
+          type: string
+          example: vegetables
+        price:
+          type: string
+          example: $10.99
+        quantity:
+          type: number
+          example: 10
+        description:
+          type: string
+          example: A very nice crop top
+        image_url:
+          type: string
+          format: url
+          example: 'https://dummyimage.com/img1'
+    ProductModelU:
+      type: object
+      properties:
+        name:
+          type: string
+          example: tomatoes
+        category:
+          type: string
+          example: vegetables
+        price:
+          type: string
+          example: $9.99
+        quantity:
+          type: number
+          example: 50
+        description:
+          type: string
+          example: A very nice crop top
+        image_url:
+          type: string
+          format: url
+          example: 'https://dummyimage.com/img1'
+    UserModel:
       type: object
       required:
         - first_name
         - email
         - role
         - sale
+      properties:
+        firstname:
+          type: string
+          example: Tunde
+        email:
+          type: string
+          example: 'tunde@gmail.com'
+        mobile_number:
+          type: number
+          example: 8106772233
+        sale:
+          type: number
+          example: 24
+        role:
+          type: string
+          example: attendant
+        image_url:
+          type: string
+          format: url
+          example: 'http://dummyimage.com/img43455'
+    UserModelR:
+      type: object
       properties:
         id:
           type: number
@@ -375,13 +496,24 @@ components:
           type: string
           format: url
           example: 'http://dummyimage.com/img43455'
-    SaleItem:
+    SaleModel:
       type: object
       required:
-        - product_id
         - seller_id
         - unit_price
         - quantity_sold
+      properties:
+        seller_id:
+          type: number
+          example: 1
+        unit_price:
+          type: string
+          example: $50.50
+        quantity_sold:
+          type: number
+          example: 15
+    SaleModelR:
+      type: object
       properties:
         product_id:
           type: number
@@ -418,5 +550,5 @@ components:
               example: 501
             message:
               type: string
-              example: 'You are not authorized to view this page'
+              example: 'You are not authorized to make this request'
         

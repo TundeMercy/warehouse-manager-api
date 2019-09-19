@@ -1,13 +1,13 @@
 function authRoute(authorizeUser) {
   return (req, res, next) => {
-    const { user } = req.headers;
-    if (authorizeUser.includes(user)) {
+    const { role } = req.headers;
+    if (authorizeUser.includes(role)) {
       return next();
     }
     return res.status(401).json({
       error: {
         code: 401,
-        message: "You are not authorized to view this page"
+        message: "You are not authorized to make this request"
       }
     });
   };
