@@ -1,8 +1,8 @@
 openapi: 3.0.0
 # Added by Tunde Ajagbe
 servers:
-  - description: Warehouse Inventory Management System
-    url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
+ # - description: Warehouse Inventory Management System
+  #  url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
   - description: Local Machine
     url: localhost:5002
 info:
