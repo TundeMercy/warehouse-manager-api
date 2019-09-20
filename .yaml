@@ -1,10 +1,12 @@
 openapi: 3.0.0
 # Added by Tunde Ajagbe
 servers:
- # - description: Warehouse Inventory Management System
-  #  url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
+  - description: Warehouse Inventory Management System
+    url: https://virtserver.swaggerhub.com/TundeMercy/warehouse-manager-doc/1.0.0
   - description: Local Machine
     url: localhost:5002
+  - description: On heroku. Choose this for live testing
+    url: https://warehouse-manager-api.herokuapp.com
 info:
   description: This is warehouse-manager API
   version: "1.0.0"
@@ -21,6 +23,18 @@ tags:
     description: Secured Attendant-only calls
 
 paths:
+  /:
+    get:
+      tags:
+        - GenPop
+      summary: Gets a redirect to this swagger documentation
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
   /products:
     parameters:
         - in: header
@@ -533,10 +547,14 @@ components:
     SaleModel:
       type: object
       required:
+        - product_id
         - seller_id
         - unit_price
         - quantity_sold
       properties:
+        product_id:
+          type: number
+          example: 2
         seller_id:
           type: number
           example: 1
@@ -549,6 +567,9 @@ components:
     SaleModelR:
       type: object
       properties:
+        id:
+          type: number
+          example: 1
         product_id:
           type: number
           example: 1
@@ -588,4 +609,3 @@ components:
     400error:
       type: string
       example: "Some unknown property is not allowed"
-        

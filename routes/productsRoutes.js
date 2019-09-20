@@ -73,14 +73,15 @@ productRoutes.put('/:productID',authRoute(['admin']), (req, res) => {
                 }
             });
         }
-        for(const prop in propsToUpdate){
-            product[prop] = propsToUpdate[prop];
-        }
         const productCopy = Object.assign({}, product);
         delete productCopy.id;
+        for(const prop in propsToUpdate){
+            productCopy[prop] = propsToUpdate[prop];
+        }
         const { error } = validateProduct(productCopy);
         if(error) return res.status(400).json(error.details[0].message);
-        await products.addProduct(product);
+        productCopy["id"] = product.id;
+        await products.updateProduct(productID, productCopy);
         return res.status(200).json(await products.getProduct(productID));
     })();
 });

@@ -2,7 +2,7 @@ import fs from 'fs';
 
 
 
-function write(file, data){
+function writeFile(file, data){
     return new Promise((resolved, reject) => {
         fs.writeFile(file, JSON.stringify(data, null, 2), 'utf8' , (err) => {
             if(err) reject(err);
@@ -11,7 +11,7 @@ function write(file, data){
     });
 }
 
-function read(file, callBack){
+function readFile(file, callBack){
     return new Promise((resolve, reject) => {
         fs.readFile(file, 'utf8', (err, data) => {
             if(err) return reject(err);
@@ -20,22 +20,5 @@ function read(file, callBack){
         });
     }); 
 }
-
-async function readFile(file, callBack){
-    try{
-      await read(file, callBack);
-    } catch(err){
-      throw new Error(err);
-    }
-  }
-  
-  async function writeFile(file, data){
-    try{
-      await write(file, data);
-      return 'written';
-    }catch(err){
-      throw new Error(err);
-    }
-  }
 
 export { writeFile, readFile};

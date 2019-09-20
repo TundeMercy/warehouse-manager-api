@@ -17,6 +17,10 @@ app.use("/products", productsRoutes);
 app.use("/sales", salesRoutes);
 app.use("/users", usersRoutes);
 
+app.get("/*", (req, res) => {
+  return res.redirect("https://app.swaggerhub.com/apis-docs/TundeMercy/warehouse-manager-doc/1.0.0");
+});
+
 const PORT = process.env.PORT || 5002;
 app.listen(
   PORT,
