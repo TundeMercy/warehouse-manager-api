@@ -8,7 +8,16 @@ servers:
   - description: On heroku. Choose this for live testing
     url: https://warehouse-manager-api.herokuapp.com
 info:
-  description: This is warehouse-manager API
+  description: |
+    This is warehouse-manager API. 
+    Check the source code on `github at https://github.com/TundeMercy/warehouse-manager-api` .
+    To run the git repo, first, you need to install all dependencies by running `npm install`. Then transpile the ES6 code to `node.js` executable ES5 code by running the command `npm run build`.
+    Once transpiled, you can then execute the transpiled code by running `npm run server`.
+    Alternatively, this last two operations can be done at once just by running `npm start` which will build and execute the code at the same time.
+    Make sure to copy the `data` folder into the root of the compiled code -the  `dist` folder- before executing or the program may log some error to the console (without crashing though).
+    The program is hosted at `https://warehouse-manager-api.herokuapp.com`.
+    To test from here, select `https://warehouse-manager-api.herokuapp.com` from the list of `Servers` below.
+    This doc gives details list of all the various endpoints defined by the app and how to consume them.
   version: "1.0.0"
   title: Warehouse Manager API
   contact:
@@ -32,7 +41,7 @@ paths:
         '200':
           description: OK
           content:
-            text/plain:
+            text/html:
               schema:
                 type: string
   /products:
